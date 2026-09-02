@@ -1,0 +1,63 @@
+.cert-list {
+  border-top: 1px solid var(--border);
+}
+
+.cert-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 4px;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left 0.25s var(--ease-out);
+}
+
+.cert-row:hover {
+  padding-left: 12px;
+}
+
+.cert-name {
+  font-size: 1.1rem;
+}
+
+.cert-issuer {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 4px;
+}
+
+.cert-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.cert-date {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cert-link {
+  font-size: 0.88rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.cert-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .cert-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cert-meta {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

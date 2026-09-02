@@ -1,0 +1,50 @@
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.education-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: 28px 26px;
+  background: var(--surface);
+}
+
+.education-dates {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.education-degree {
+  font-size: 1.2rem;
+  max-width: 30ch;
+}
+
+.education-school {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+
+.education-desc {
+  color: var(--ink-soft);
+  margin-top: 14px;
+  line-height: 1.6;
+  font-size: 0.94rem;
+}
+
+.education-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+@media (max-width: 780px) {
+  .education-grid {
+    grid-template-columns: 1fr;
+  }
+}

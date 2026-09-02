@@ -1,0 +1,130 @@
+.hero {
+  padding-top: clamp(120px, 18vh, 180px);
+  padding-bottom: clamp(60px, 10vh, 100px);
+  position: relative;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: clamp(32px, 6vw, 64px);
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 20px;
+  animation: hero-fade 0.7s var(--ease-out) both;
+}
+
+.hero-name {
+  font-size: clamp(2.6rem, 6vw, 4.3rem);
+  animation: hero-fade 0.7s var(--ease-out) both;
+  animation-delay: 0.08s;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  color: var(--accent);
+  margin-top: 10px;
+  animation: hero-fade 0.7s var(--ease-out) both;
+  animation-delay: 0.16s;
+}
+
+.hero-tagline {
+  margin-top: 22px;
+  font-size: 1.08rem;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  line-height: 1.6;
+  animation: hero-fade 0.7s var(--ease-out) both;
+  animation-delay: 0.24s;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 36px;
+  animation: hero-fade 0.7s var(--ease-out) both;
+  animation-delay: 0.32s;
+}
+
+.hero-links {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  animation: hero-fade 0.7s var(--ease-out) both;
+  animation-delay: 0.4s;
+}
+
+.hero-links a:hover {
+  color: var(--accent);
+}
+
+.hero-links-divider {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-eyebrow,
+  .hero-name,
+  .hero-title,
+  .hero-tagline,
+  .hero-actions,
+  .hero-links {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    order: -1;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    justify-content: center;
+  }
+}
