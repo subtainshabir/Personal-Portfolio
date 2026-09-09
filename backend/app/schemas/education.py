@@ -2,19 +2,19 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class ExperienceCreate(BaseModel):
-    role: str
-    org: str
+class EducationCreate(BaseModel):
+    degree: str
+    school: str
     start: str
     end: str
     description: str
     tech: Optional[str] = None
 
 
-class Experience(BaseModel):
+class Education(BaseModel):
     id: int
-    role: str
-    org: str
+    degree: str
+    school: str
     start: str
     end: str
     description: str

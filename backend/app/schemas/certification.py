@@ -1,12 +1,17 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
-class SkillCreate(BaseModel):
-    category: str
+class CertificationCreate(BaseModel):
     name: str
+    issuer: str
+    date: str
+    url: Optional[str] = None
 
 
-class Skill(BaseModel):
+class Certification(BaseModel):
     id: int
-    category: str
     name: str
+    issuer: str
+    date: str
+    url: Optional[str] = None
