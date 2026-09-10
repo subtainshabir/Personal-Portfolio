@@ -9,6 +9,7 @@ class AboutCreate(BaseModel):
     location: Optional[str] = None
     bio: str
     resume_url: Optional[str] = None
+    image: Optional[str] = None
 
 
 class About(BaseModel):
@@ -19,3 +20,4 @@ class About(BaseModel):
     location: Optional[str] = None
     bio: str
     resume_url: Optional[str] = None
+    image: Optional[str] = None

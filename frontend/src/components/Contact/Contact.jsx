@@ -1,22 +1,53 @@
-import { useState } from 'react';
-import { profile } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api, ApiError } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Contact.css';
+
+function displayUrl(url) {
+  return url.replace(/^mailto:/, '').replace(/^https?:\/\//, '');
+}
 
 export default function Contact() {
   const revealRef = useReveal();
   const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [socialLinks, setSocialLinks] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/social-links')
+      .then((data) => {
+        if (!cancelled) setSocialLinks(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Frontend-only for now — no backend submission yet.
-    setStatus('sent');
+    setError('');
+    setStatus('sending');
+    try {
+      await api.post('/contact', form);
+      setStatus('sent');
+      setForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      setStatus('idle');
+      setError(err instanceof ApiError ? err.message : 'Failed to send. Try again.');
+    }
   };
 
   return (
@@ -29,20 +60,22 @@ export default function Contact() {
             Open to full-time roles, freelance projects, and interesting conversations about applied ML.
           </p>
 
-          <div className="contact-details">
-            <a href={`mailto:${profile.email}`} className="contact-detail">
-              <span className="contact-detail-label">Email</span>
-              <span className="contact-detail-value">{profile.email}</span>
-            </a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="contact-detail">
-              <span className="contact-detail-label">LinkedIn</span>
-              <span className="contact-detail-value">linkedin.com/in/yourusername</span>
-            </a>
-            <a href={profile.github} target="_blank" rel="noreferrer" className="contact-detail">
-              <span className="contact-detail-label">GitHub</span>
-              <span className="contact-detail-value">github.com/yourusername</span>
-            </a>
-          </div>
+          {socialLinks.length > 0 && (
+            <div className="contact-details">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target={link.url.startsWith('mailto:') ? undefined : '_blank'}
+                  rel="noreferrer"
+                  className="contact-detail"
+                >
+                  <span className="contact-detail-label">{link.platform}</span>
+                  <span className="contact-detail-value">{displayUrl(link.url)}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>
@@ -58,14 +91,11 @@ export default function Contact() {
             <label htmlFor="message">Message</label>
             <textarea id="message" name="message" rows="5" required value={form.message} onChange={handleChange} />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={status === 'sent'}>
-            {status === 'sent' ? 'Message ready to send' : 'Send message'}
+          <button type="submit" className="btn btn-primary" disabled={status === 'sending' || status === 'sent'}>
+            {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Message sent' : 'Send message'}
           </button>
-          {status === 'sent' && (
-            <p className="form-note">
-              Form UI only for now — connect this to the FastAPI backend to actually send messages.
-            </p>
-          )}
+          {status === 'sent' && <p className="form-note">Thanks — I'll get back to you soon.</p>}
+          {error && <p className="form-note is-error">{error}</p>}
         </form>
       </div>
     </section>

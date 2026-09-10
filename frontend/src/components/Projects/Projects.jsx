@@ -1,8 +1,13 @@
-import { projects } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Projects.css';
 
-function ProjectVisual({ seed }) {
+function ProjectVisual({ seed, image, title }) {
+  if (image) {
+    return <img className="project-visual project-visual-image" src={image} alt={title} />;
+  }
+
   const hue = seed % 2 === 0 ? 'a' : 'b';
   return (
     <div className={`project-visual project-visual-${hue}`} aria-hidden="true">
@@ -37,26 +42,11 @@ function buildSpark(seed) {
 
 function ProjectCard({ project, index }) {
   return (
-    <article className={`project-card ${project.featured ? 'is-featured' : ''}`}>
-      <ProjectVisual seed={index} />
+    <article className="project-card">
+      <ProjectVisual seed={index} image={project.image} title={project.title} />
       <div className="project-body">
-        <h3 className="project-name">{project.name}</h3>
+        <h3 className="project-name">{project.title}</h3>
         <p className="project-desc">{project.description}</p>
-        <ul className="project-tags">
-          {project.tags.map((tag) => (
-            <li key={tag} className="pill">{tag}</li>
-          ))}
-        </ul>
-        <div className="project-links">
-          <a href={project.github} target="_blank" rel="noreferrer" className="btn btn-outline">
-            GitHub
-          </a>
-          {project.demo && (
-            <a href={project.demo} target="_blank" rel="noreferrer" className="btn btn-ghost">
-              Live demo ↗
-            </a>
-          )}
-        </div>
       </div>
     </article>
   );
@@ -64,6 +54,26 @@ function ProjectCard({ project, index }) {
 
 export default function Projects() {
   const revealRef = useReveal();
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/projects')
+      .then((data) => {
+        if (!cancelled) setProjects(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (projects.length === 0) return null;
 
   return (
     <section id="projects" className="section projects">

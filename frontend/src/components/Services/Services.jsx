@@ -1,9 +1,30 @@
-import { services } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Services.css';
 
 export default function Services() {
   const revealRef = useReveal();
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/services')
+      .then((data) => {
+        if (!cancelled) setServices(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (services.length === 0) return null;
 
   return (
     <section id="services" className="section services">

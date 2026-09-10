@@ -1,9 +1,35 @@
-import { education } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Education.css';
 
+function techList(tech) {
+  if (!tech) return [];
+  return tech.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
 export default function Education() {
   const revealRef = useReveal();
+  const [education, setEducation] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/education')
+      .then((data) => {
+        if (!cancelled) setEducation(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (education.length === 0) return null;
 
   return (
     <section id="education" className="section education">
@@ -21,7 +47,7 @@ export default function Education() {
               <div className="education-school">{item.school}</div>
               <p className="education-desc">{item.description}</p>
               <ul className="education-tech">
-                {item.tech.map((tech) => (
+                {techList(item.tech).map((tech) => (
                   <li key={tech} className="pill">{tech}</li>
                 ))}
               </ul>

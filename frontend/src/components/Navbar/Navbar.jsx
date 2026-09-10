@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { navLinks, profile } from '../../data/portfolio';
+import { navLinks } from '../../data/portfolio';
+import { api } from '../../lib/api';
 import useActiveSection from '../../hooks/useActiveSection';
 import './Navbar.css';
 
@@ -8,6 +9,7 @@ const sectionIds = navLinks.map((link) => link.id);
 export default function Navbar({ theme, onToggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [name, setName] = useState('');
   const active = useActiveSection(sectionIds);
 
   useEffect(() => {
@@ -21,6 +23,23 @@ export default function Navbar({ theme, onToggleTheme }) {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
   }, [menuOpen]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/about')
+      .then((data) => {
+        if (!cancelled) setName(data[0]?.name ?? '');
+      })
+      .catch(() => {
+        // public section fails quietly; nav still renders without a name
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleNavClick = (id) => (event) => {
     event.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -31,7 +50,7 @@ export default function Navbar({ theme, onToggleTheme }) {
     <header className={`nav ${scrolled ? 'nav-scrolled' : ''}`}>
       <div className="wrap nav-inner">
         <a href="#home" className="nav-logo" onClick={handleNavClick('home')}>
-          {profile.name}
+          {name}
         </a>
 
         <nav className="nav-links" aria-label="Primary">

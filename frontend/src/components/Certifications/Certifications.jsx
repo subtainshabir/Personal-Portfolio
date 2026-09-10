@@ -1,9 +1,30 @@
-import { certifications } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Certifications.css';
 
 export default function Certifications() {
   const revealRef = useReveal();
+  const [certifications, setCertifications] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/certifications')
+      .then((data) => {
+        if (!cancelled) setCertifications(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (certifications.length === 0) return null;
 
   return (
     <section id="certifications" className="section certifications">
@@ -22,9 +43,11 @@ export default function Certifications() {
               </div>
               <div className="cert-meta">
                 <span className="cert-date">{cert.date}</span>
-                <a href={cert.url} target="_blank" rel="noreferrer" className="cert-link">
-                  View credential ↗
-                </a>
+                {cert.url && (
+                  <a href={cert.url} target="_blank" rel="noreferrer" className="cert-link">
+                    View credential ↗
+                  </a>
+                )}
               </div>
             </li>
           ))}

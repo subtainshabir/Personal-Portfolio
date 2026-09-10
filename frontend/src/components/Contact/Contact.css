@@ -82,6 +82,10 @@
   color: var(--muted);
 }
 
+.form-note.is-error {
+  color: #e0685f;
+}
+
 @media (max-width: 860px) {
   .contact-grid {
     grid-template-columns: 1fr;

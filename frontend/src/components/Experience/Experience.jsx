@@ -1,9 +1,35 @@
-import { experience } from '../../data/portfolio';
+import { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Experience.css';
 
+function techList(tech) {
+  if (!tech) return [];
+  return tech.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
 export default function Experience() {
   const revealRef = useReveal();
+  const [experience, setExperience] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get('/experience')
+      .then((data) => {
+        if (!cancelled) setExperience(data);
+      })
+      .catch(() => {
+        // public section fails quietly; page still renders without it
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (experience.length === 0) return null;
 
   return (
     <section id="experience" className="section experience">
@@ -26,7 +52,7 @@ export default function Experience() {
                 <div className="timeline-org">{item.org}</div>
                 <p className="timeline-desc">{item.description}</p>
                 <ul className="timeline-tech">
-                  {item.tech.map((tech) => (
+                  {techList(item.tech).map((tech) => (
                     <li key={tech} className="pill">{tech}</li>
                   ))}
                 </ul>
