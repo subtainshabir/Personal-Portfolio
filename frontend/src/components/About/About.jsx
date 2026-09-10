@@ -50,6 +50,9 @@ export default function About() {
               {paragraph}
             </p>
           ))}
+          {about.image && (
+            <img className="about-photo" src={about.image} alt={about.name} />
+          )}
         </div>
 
         <div className="about-stats">

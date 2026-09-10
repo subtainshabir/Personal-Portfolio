@@ -12,3 +12,4 @@ class About(Base):
     location = Column(String, nullable=True)
     bio = Column(String, nullable=False)
     resume_url = Column(String, nullable=True)
+    image = Column(String, nullable=True)

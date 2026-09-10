@@ -21,6 +21,16 @@
   margin-top: 18px;
 }
 
+.about-photo {
+  width: 220px;
+  max-width: 55%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border);
+  margin-top: 32px;
+}
+
 .about-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -55,5 +65,10 @@
 @media (max-width: 860px) {
   .about-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-photo {
+    width: 180px;
+    max-width: 45%;
   }
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { ApiError } from '../../../lib/api';
+import { useAuth } from '../../../context/AuthContext';
+import { api, ApiError } from '../../../lib/api';
 import './EntityFormModal.css';
 
 export default function EntityFormModal({ entity, initialValues, onSave, onClose }) {
+  const { token } = useAuth();
   const [values, setValues] = useState(() => {
     const initial = {};
     entity.fields.forEach((field) => {
@@ -12,9 +14,27 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploadingField, setUploadingField] = useState('');
 
   const handleChange = (name) => (event) => {
     setValues((prev) => ({ ...prev, [name]: event.target.value }));
+  };
+
+  const handleFileSelect = (name) => async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setError('');
+    setUploadingField(name);
+    try {
+      const { url } = await api.upload(file, token);
+      setValues((prev) => ({ ...prev, [name]: url }));
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Upload failed.');
+    } finally {
+      setUploadingField('');
+      event.target.value = '';
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -45,7 +65,8 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
           {entity.fields.map((field) => (
             <div className="admin-form-field" key={field.name}>
               <label htmlFor={field.name}>{field.label}</label>
-              {field.type === 'textarea' ? (
+
+              {field.type === 'textarea' && (
                 <textarea
                   id={field.name}
                   rows={4}
@@ -53,7 +74,27 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
                   value={values[field.name]}
                   onChange={handleChange(field.name)}
                 />
-              ) : (
+              )}
+
+              {field.type === 'image' && (
+                <>
+                  {values[field.name] && (
+                    <img src={values[field.name]} alt="" className="entity-image-preview" />
+                  )}
+                  <input
+                    id={field.name}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    onChange={handleFileSelect(field.name)}
+                    disabled={uploadingField === field.name}
+                  />
+                  {uploadingField === field.name && (
+                    <p className="entity-upload-status">Uploading…</p>
+                  )}
+                </>
+              )}
+
+              {field.type !== 'textarea' && field.type !== 'image' && (
                 <input
                   id={field.name}
                   type="text"
@@ -61,9 +102,6 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
                   value={values[field.name]}
                   onChange={handleChange(field.name)}
                 />
-              )}
-              {field.type === 'image' && values[field.name] && (
-                <img src={values[field.name]} alt="" className="entity-image-preview" />
               )}
             </div>
           ))}
@@ -75,7 +113,7 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
           <button type="button" className="btn btn-outline" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="btn btn-primary" disabled={saving}>
+          <button type="submit" className="btn btn-primary" disabled={saving || Boolean(uploadingField)}>
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>

@@ -4,7 +4,9 @@ import EmbeddingField from '../EmbeddingField/EmbeddingField';
 import './Hero.css';
 
 function findLink(links, platform) {
-  return links.find((link) => link.platform.toLowerCase() === platform)?.url;
+  return links.find(
+    (link) => link.platform.toLowerCase() === platform
+  )?.url;
 }
 
 export default function Hero() {
@@ -38,19 +40,38 @@ export default function Hero() {
   return (
     <section id="home" className="hero">
       <div className="wrap hero-inner">
+
         <div className="hero-copy">
-          {profile.location && <p className="hero-eyebrow">{profile.location}</p>}
+          {profile.location && (
+            <p className="hero-eyebrow">{profile.location}</p>
+          )}
+
           <h1 className="hero-name">
             {profile.name}
           </h1>
-          <p className="hero-title">{profile.title}</p>
-          <p className="hero-tagline">{profile.tagline}</p>
+
+          <p className="hero-title">
+            {profile.title}
+          </p>
+
+          <p className="hero-tagline">
+            {profile.tagline}
+          </p>
 
           <div className="hero-actions">
-            <a href="#projects" className="btn btn-primary" onClick={scrollTo('projects')}>
+            <a
+              href="#projects"
+              className="btn btn-primary"
+              onClick={scrollTo('projects')}
+            >
               View projects
             </a>
-            <a href="#contact" className="btn btn-outline" onClick={scrollTo('contact')}>
+
+            <a
+              href="#contact"
+              className="btn btn-outline"
+              onClick={scrollTo('contact')}
+            >
               Contact me
             </a>
           </div>
@@ -59,26 +80,55 @@ export default function Hero() {
             <div className="hero-links">
               {github && (
                 <>
-                  <a href={github} target="_blank" rel="noreferrer">GitHub</a>
-                  {(linkedin || profile.resume_url) && <span className="hero-links-divider" />}
+                  <a href={github} target="_blank" rel="noreferrer">
+                    GitHub
+                  </a>
+
+                  {(linkedin || profile.resume_url) && (
+                    <span className="hero-links-divider" />
+                  )}
                 </>
               )}
+
               {linkedin && (
                 <>
-                  <a href={linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-                  {profile.resume_url && <span className="hero-links-divider" />}
+                  <a href={linkedin} target="_blank" rel="noreferrer">
+                    LinkedIn
+                  </a>
+
+                  {profile.resume_url && (
+                    <span className="hero-links-divider" />
+                  )}
                 </>
               )}
+
               {profile.resume_url && (
-                <a href={profile.resume_url} target="_blank" rel="noreferrer">Resume</a>
+                <a
+                  href={profile.resume_url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Resume
+                </a>
               )}
             </div>
           )}
         </div>
 
-        <div className="hero-visual" aria-hidden="true">
+        <div className="hero-visual">
+
+          {profile.profile_image_url && (
+            <img
+              src={profile.profile_image_url}
+              alt={profile.name}
+              className="hero-profile-image"
+            />
+          )}
+
           <EmbeddingField />
+
         </div>
+
       </div>
     </section>
   );
@@ -87,6 +137,9 @@ export default function Hero() {
 function scrollTo(id) {
   return (event) => {
     event.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth',
+    });
   };
 }
+

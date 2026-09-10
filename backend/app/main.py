@@ -2,6 +2,8 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy import inspect, text
 
 from app.database import Base, engine, SessionLocal
 from app.models.project import Project
@@ -27,8 +29,37 @@ from app.routes.about import router as about_router
 from app.routes.highlight import router as highlights_router
 from app.routes.contact_message import router as contact_router
 from app.routes.auth import router as auth_router
+from app.routes.upload import router as upload_router
 
 Base.metadata.create_all(bind=engine)
+
+
+def sync_missing_columns():
+    """Adds any column defined on a model but missing from its existing table.
+    Never drops or renames columns. Always adds as nullable, regardless of the
+    model's own nullable setting, so this is safe to run against tables that
+    already have rows."""
+    inspector = inspect(engine)
+
+    with engine.begin() as conn:
+        for table in Base.metadata.sorted_tables:
+            if not inspector.has_table(table.name):
+                continue
+
+            existing_columns = {col["name"] for col in inspector.get_columns(table.name)}
+
+            for column in table.columns:
+                if column.name in existing_columns:
+                    continue
+
+                column_type = column.type.compile(dialect=engine.dialect)
+                print(f"Migrating: adding column '{column.name}' to table '{table.name}'")
+                conn.execute(
+                    text(f'ALTER TABLE "{table.name}" ADD COLUMN "{column.name}" {column_type}')
+                )
+
+
+sync_missing_columns()
 
 
 def seed_admin_user():
@@ -71,6 +102,9 @@ app.include_router(social_links_router, prefix="/api")
 app.include_router(about_router, prefix="/api")
 app.include_router(highlights_router, prefix="/api")
 app.include_router(contact_router, prefix="/api")
+app.include_router(upload_router, prefix="/api")
+
+app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
 
 
 @app.get("/")

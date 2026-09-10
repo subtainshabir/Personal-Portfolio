@@ -5,6 +5,7 @@ from typing import List
 from app.database import SessionLocal
 from app.models.about import About
 from app.schemas.about import About as AboutSchema, AboutCreate
+from app.auth import get_current_admin
 
 router = APIRouter()
 
@@ -33,14 +34,15 @@ def get_about_item(about_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/about", response_model=AboutSchema)
-def create_about(about: AboutCreate, db: Session = Depends(get_db)):
+def create_about(about: AboutCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     new_about = About(
         name=about.name,
         title=about.title,
         tagline=about.tagline,
         location=about.location,
         bio=about.bio,
-        resume_url=about.resume_url
+        resume_url=about.resume_url,
+        image=about.image
     )
 
     db.add(new_about)
@@ -54,7 +56,8 @@ def create_about(about: AboutCreate, db: Session = Depends(get_db)):
 def update_about(
     about_id: int,
     about: AboutCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
     existing_about = db.query(About).filter(
         About.id == about_id
@@ -69,6 +72,7 @@ def update_about(
     existing_about.location = about.location
     existing_about.bio = about.bio
     existing_about.resume_url = about.resume_url
+    existing_about.image = about.image
 
     db.commit()
     db.refresh(existing_about)
@@ -77,7 +81,7 @@ def update_about(
 
 
 @router.delete("/about/{about_id}")
-def delete_about(about_id: int, db: Session = Depends(get_db)):
+def delete_about(about_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     about = db.query(About).filter(
         About.id == about_id
     ).first()

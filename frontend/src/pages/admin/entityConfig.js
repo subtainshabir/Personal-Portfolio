@@ -92,6 +92,7 @@ export const entities = [
       { name: 'location', label: 'Location', type: 'text' },
       { name: 'bio', label: 'Bio', type: 'textarea', required: true },
       { name: 'resume_url', label: 'Resume URL', type: 'text' },
+      { name: 'image', label: 'Profile Image URL', type: 'image' },
     ],
   },
   {
