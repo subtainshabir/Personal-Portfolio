@@ -5,6 +5,7 @@ from typing import List
 from app.database import SessionLocal
 from app.models.project import Project
 from app.schemas.project import Project as ProjectSchema, ProjectCreate
+from app.auth import get_current_admin
 
 router = APIRouter()
 
@@ -33,7 +34,7 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/projects", response_model=ProjectSchema)
-def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
+def create_project(project: ProjectCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     new_project = Project(
         title=project.title,
         description=project.description,
@@ -51,7 +52,8 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
 def update_project(
     project_id: int,
     project: ProjectCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
     existing_project = db.query(Project).filter(
         Project.id == project_id
@@ -71,7 +73,7 @@ def update_project(
 
 
 @router.delete("/projects/{project_id}")
-def delete_project(project_id: int, db: Session = Depends(get_db)):
+def delete_project(project_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     project = db.query(Project).filter(
         Project.id == project_id
     ).first()

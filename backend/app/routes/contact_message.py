@@ -5,6 +5,7 @@ from typing import List
 from app.database import SessionLocal
 from app.models.contact_message import ContactMessage
 from app.schemas.contact_message import ContactMessage as ContactMessageSchema, ContactMessageCreate
+from app.auth import get_current_admin
 
 router = APIRouter()
 
@@ -18,12 +19,12 @@ def get_db():
 
 
 @router.get("/contact", response_model=List[ContactMessageSchema])
-def get_contact_messages(db: Session = Depends(get_db)):
+def get_contact_messages(db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     return db.query(ContactMessage).all()
 
 
 @router.get("/contact/{contact_id}", response_model=ContactMessageSchema)
-def get_contact_message(contact_id: int, db: Session = Depends(get_db)):
+def get_contact_message(contact_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     contact_message = db.query(ContactMessage).filter(ContactMessage.id == contact_id).first()
 
     if not contact_message:
@@ -51,7 +52,8 @@ def create_contact_message(contact_message: ContactMessageCreate, db: Session = 
 def update_contact_message(
     contact_id: int,
     contact_message: ContactMessageCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
     existing_contact_message = db.query(ContactMessage).filter(
         ContactMessage.id == contact_id
@@ -71,7 +73,7 @@ def update_contact_message(
 
 
 @router.delete("/contact/{contact_id}")
-def delete_contact_message(contact_id: int, db: Session = Depends(get_db)):
+def delete_contact_message(contact_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     contact_message = db.query(ContactMessage).filter(
         ContactMessage.id == contact_id
     ).first()

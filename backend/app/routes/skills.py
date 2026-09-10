@@ -5,6 +5,7 @@ from typing import List
 from app.database import SessionLocal
 from app.models.skill import Skill
 from app.schemas.skill import Skill as SkillSchema, SkillCreate
+from app.auth import get_current_admin
 
 router = APIRouter()
 
@@ -33,7 +34,7 @@ def get_skill(skill_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/skills", response_model=SkillSchema)
-def create_skill(skill: SkillCreate, db: Session = Depends(get_db)):
+def create_skill(skill: SkillCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     new_skill = Skill(
         category=skill.category,
         name=skill.name
@@ -50,7 +51,8 @@ def create_skill(skill: SkillCreate, db: Session = Depends(get_db)):
 def update_skill(
     skill_id: int,
     skill: SkillCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
     existing_skill = db.query(Skill).filter(
         Skill.id == skill_id
@@ -69,7 +71,7 @@ def update_skill(
 
 
 @router.delete("/skills/{skill_id}")
-def delete_skill(skill_id: int, db: Session = Depends(get_db)):
+def delete_skill(skill_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     skill = db.query(Skill).filter(
         Skill.id == skill_id
     ).first()

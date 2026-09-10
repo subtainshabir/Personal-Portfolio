@@ -1,0 +1,38 @@
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.admin-header-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+.admin-header-logout {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 9px 18px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.admin-header-logout:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .admin-header {
+    padding: 16px 20px;
+  }
+
+  .admin-header-title {
+    font-size: 1.1rem;
+  }
+}

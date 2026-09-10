@@ -1,7 +1,9 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import Base, engine
+from app.database import Base, engine, SessionLocal
 from app.models.project import Project
 from app.models.skill import Skill
 from app.models.experience import Experience
@@ -12,6 +14,8 @@ from app.models.social_link import SocialLink
 from app.models.about import About
 from app.models.highlight import Highlight
 from app.models.contact_message import ContactMessage
+from app.models.admin_user import AdminUser
+from app.auth import hash_password
 from app.routes.projects import router as projects_router
 from app.routes.skills import router as skills_router
 from app.routes.experience import router as experience_router
@@ -22,8 +26,29 @@ from app.routes.social_links import router as social_links_router
 from app.routes.about import router as about_router
 from app.routes.highlight import router as highlights_router
 from app.routes.contact_message import router as contact_router
+from app.routes.auth import router as auth_router
 
 Base.metadata.create_all(bind=engine)
+
+
+def seed_admin_user():
+    email = os.getenv("ADMIN_EMAIL")
+    password = os.getenv("ADMIN_PASSWORD")
+
+    if not email or not password:
+        return
+
+    db = SessionLocal()
+    try:
+        existing = db.query(AdminUser).filter(AdminUser.email == email).first()
+        if not existing:
+            db.add(AdminUser(email=email, hashed_password=hash_password(password)))
+            db.commit()
+    finally:
+        db.close()
+
+
+seed_admin_user()
 
 app = FastAPI()
 
@@ -35,6 +60,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router, prefix="/api")
 app.include_router(projects_router, prefix="/api")
 app.include_router(skills_router, prefix="/api")
 app.include_router(experience_router, prefix="/api")

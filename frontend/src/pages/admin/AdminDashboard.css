@@ -1,0 +1,37 @@
+.admin-dashboard-sub {
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.admin-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.admin-stat-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.admin-stat-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.admin-stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}

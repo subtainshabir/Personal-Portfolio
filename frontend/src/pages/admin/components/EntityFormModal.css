@@ -1,0 +1,55 @@
+.entity-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 200;
+}
+
+.entity-modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.entity-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+
+.entity-modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.entity-image-preview {
+  margin-top: 8px;
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--border);
+}
+
+.entity-modal-error {
+  font-size: 0.85rem;
+  color: #e0685f;
+}
+
+.entity-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

@@ -5,6 +5,7 @@ from typing import List
 from app.database import SessionLocal
 from app.models.experience import Experience
 from app.schemas.experience import Experience as ExperienceSchema, ExperienceCreate
+from app.auth import get_current_admin
 
 router = APIRouter()
 
@@ -33,7 +34,7 @@ def get_experience_item(experience_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/experience", response_model=ExperienceSchema)
-def create_experience(experience: ExperienceCreate, db: Session = Depends(get_db)):
+def create_experience(experience: ExperienceCreate, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     new_experience = Experience(
         role=experience.role,
         org=experience.org,
@@ -54,7 +55,8 @@ def create_experience(experience: ExperienceCreate, db: Session = Depends(get_db
 def update_experience(
     experience_id: int,
     experience: ExperienceCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: str = Depends(get_current_admin)
 ):
     existing_experience = db.query(Experience).filter(
         Experience.id == experience_id
@@ -77,7 +79,7 @@ def update_experience(
 
 
 @router.delete("/experience/{experience_id}")
-def delete_experience(experience_id: int, db: Session = Depends(get_db)):
+def delete_experience(experience_id: int, db: Session = Depends(get_db), admin: str = Depends(get_current_admin)):
     experience = db.query(Experience).filter(
         Experience.id == experience_id
     ).first()
