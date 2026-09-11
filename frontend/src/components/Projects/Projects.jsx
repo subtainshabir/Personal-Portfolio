@@ -47,6 +47,20 @@ function ProjectCard({ project, index }) {
       <div className="project-body">
         <h3 className="project-name">{project.title}</h3>
         <p className="project-desc">{project.description}</p>
+        {(project.github || project.demo) && (
+          <div className="project-links">
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noreferrer" className="btn btn-outline">
+                GitHub
+              </a>
+            )}
+            {project.demo && (
+              <a href={project.demo} target="_blank" rel="noreferrer" className="btn btn-ghost">
+                Live demo ↗
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

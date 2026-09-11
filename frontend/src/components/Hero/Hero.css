@@ -82,6 +82,16 @@
   justify-content: center;
 }
 
+.hero-photo {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border);
+  box-shadow: 0 0 0 10px var(--accent-soft);
+}
+
 @keyframes hero-fade {
   from {
     opacity: 0;

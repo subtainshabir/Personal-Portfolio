@@ -38,7 +38,9 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db), admin:
     new_project = Project(
         title=project.title,
         description=project.description,
-        image=project.image
+        image=project.image,
+        github=project.github,
+        demo=project.demo
     )
 
     db.add(new_project)
@@ -65,6 +67,8 @@ def update_project(
     existing_project.title = project.title
     existing_project.description = project.description
     existing_project.image = project.image
+    existing_project.github = project.github
+    existing_project.demo = project.demo
 
     db.commit()
     db.refresh(existing_project)

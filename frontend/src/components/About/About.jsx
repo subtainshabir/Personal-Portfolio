@@ -45,23 +45,26 @@ export default function About() {
         <div className="about-copy reveal">
           <span className="section-kicker">About</span>
           <h2 className="section-title">Turning research into things that run in production.</h2>
-          {bioParagraphs.map((paragraph) => (
-            <p className="about-paragraph" key={paragraph.slice(0, 12)}>
+          {bioParagraphs.map((paragraph, index) => (
+            <p
+              className={index === 0 ? 'about-paragraph about-lede' : 'about-paragraph'}
+              key={paragraph.slice(0, 12)}
+            >
               {paragraph}
             </p>
           ))}
-          {about.image && (
-            <img className="about-photo" src={about.image} alt={about.name} />
-          )}
         </div>
 
-        <div className="about-stats">
-          {highlights.map((item) => (
-            <div className="stat-card" key={item.id}>
-              <span className="stat-value">{item.value}</span>
-              <span className="stat-label">{item.label}</span>
-            </div>
-          ))}
+        <div className="about-stats-wrap">
+          <span className="about-stats-label">By the numbers</span>
+          <div className="about-stats">
+            {highlights.map((item) => (
+              <div className="stat-card" key={item.id}>
+                <span className="stat-value">{item.value}</span>
+                <span className="stat-label">{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

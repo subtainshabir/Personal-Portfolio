@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Hero from '../components/Hero/Hero';
-import About from '../components/About/About';
+// import About from '../components/About/About';
 import Skills from '../components/Skills/Skills';
 import Projects from '../components/Projects/Projects';
 import Experience from '../components/Experience/Experience';
@@ -33,7 +33,7 @@ export default function PublicPortfolio() {
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <main>
         <Hero />
-        <About />
+        {/* <About /> */}
         <Skills />
         <Projects />
         <Experience />

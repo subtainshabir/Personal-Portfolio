@@ -3,11 +3,13 @@ export const entities = [
     key: 'projects',
     label: 'Projects',
     endpoint: '/projects',
-    columns: ['title', 'description'],
+    columns: ['title', 'description', 'github'],
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true },
       { name: 'description', label: 'Description', type: 'textarea', required: true },
-      { name: 'image', label: 'Image URL', type: 'image' },
+      { name: 'image', label: 'Project Image', type: 'image' },
+      { name: 'github', label: 'GitHub URL', type: 'text', required: true },
+      { name: 'demo', label: 'Live Demo URL (optional)', type: 'text' },
     ],
   },
   {

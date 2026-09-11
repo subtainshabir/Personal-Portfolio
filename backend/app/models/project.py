@@ -9,3 +9,5 @@ class Project(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     image = Column(String, nullable=True)
+    github = Column(String, nullable=True)
+    demo = Column(String, nullable=True)

@@ -19,12 +19,8 @@
   border-color: var(--accent);
 }
 
-.project-card.is-featured {
-  grid-column: span 1;
-}
-
 .project-visual {
-  height: 140px;
+  height: 220px;
   color: var(--accent);
   background: linear-gradient(160deg, var(--surface-2), var(--surface));
   padding: 0 24px;
@@ -40,6 +36,13 @@
   width: 100%;
   height: 70px;
   opacity: 0.85;
+}
+
+.project-visual-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  padding: 0;
 }
 
 .project-body {

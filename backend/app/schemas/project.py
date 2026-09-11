@@ -6,6 +6,8 @@ class ProjectCreate(BaseModel):
     title: str
     description: str
     image: Optional[str] = None
+    github: str
+    demo: Optional[str] = None
 
 
 class Project(BaseModel):
@@ -13,3 +15,5 @@ class Project(BaseModel):
     title: str
     description: str
     image: Optional[str] = None
+    github: Optional[str] = None
+    demo: Optional[str] = None
