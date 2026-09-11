@@ -3,9 +3,26 @@ import { api } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Experience.css';
 
+const MONTH_NAMES = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
 function techList(tech) {
   if (!tech) return [];
   return tech.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
+function formatDateRange(item) {
+  if (item.start_month && item.start_year) {
+    const start = `${MONTH_NAMES[item.start_month - 1]} ${item.start_year}`;
+    const end = item.end_month && item.end_year
+      ? `${MONTH_NAMES[item.end_month - 1]} ${item.end_year}`
+      : 'Present';
+    return item.duration ? `${start} — ${end} · ${item.duration}` : `${start} — ${end}`;
+  }
+
+  return `${item.start} — ${item.end}`;
 }
 
 export default function Experience() {
@@ -47,7 +64,7 @@ export default function Experience() {
                 <span className="timeline-line" />
               </div>
               <div className="timeline-content">
-                <div className="timeline-dates">{item.start} — {item.end}</div>
+                <div className="timeline-dates">{formatDateRange(item)}</div>
                 <h3 className="timeline-role">{item.role}</h3>
                 <div className="timeline-org">{item.org}</div>
                 <p className="timeline-desc">{item.description}</p>

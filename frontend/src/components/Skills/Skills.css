@@ -1,15 +1,13 @@
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-m);
-  overflow: hidden;
+  gap: 16px;
 }
 
 .skill-group {
   background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
   padding: 28px 26px;
 }
 

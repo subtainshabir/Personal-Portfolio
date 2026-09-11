@@ -42,7 +42,13 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
     setError('');
     setSaving(true);
     try {
-      await onSave(values);
+      const payload = { ...values };
+      entity.fields.forEach((field) => {
+        if (field.type === 'number') {
+          payload[field.name] = payload[field.name] === '' ? null : Number(payload[field.name]);
+        }
+      });
+      await onSave(payload);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to save.');
     } finally {
@@ -94,7 +100,20 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
                 </>
               )}
 
-              {field.type !== 'textarea' && field.type !== 'image' && (
+              {field.type === 'number' && (
+                <input
+                  id={field.name}
+                  type="number"
+                  required={field.required}
+                  min={field.min}
+                  max={field.max}
+                  placeholder={field.placeholder}
+                  value={values[field.name]}
+                  onChange={handleChange(field.name)}
+                />
+              )}
+
+              {field.type !== 'textarea' && field.type !== 'image' && field.type !== 'number' && (
                 <input
                   id={field.name}
                   type="text"

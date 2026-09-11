@@ -35,10 +35,10 @@ Base.metadata.create_all(bind=engine)
 
 
 def sync_missing_columns():
-    """Adds any column defined on a model but missing from its existing table.
-    Never drops or renames columns. Always adds as nullable, regardless of the
-    model's own nullable setting, so this is safe to run against tables that
-    already have rows."""
+    """Adds any column defined on a model but missing from its existing table,
+    and relaxes NOT NULL to nullable where the model now allows it. Never drops
+    or renames columns, never tightens a constraint, so this is always safe to
+    run against tables that already have rows."""
     inspector = inspect(engine)
 
     with engine.begin() as conn:
@@ -46,17 +46,23 @@ def sync_missing_columns():
             if not inspector.has_table(table.name):
                 continue
 
-            existing_columns = {col["name"] for col in inspector.get_columns(table.name)}
+            existing_columns = {col["name"]: col for col in inspector.get_columns(table.name)}
 
             for column in table.columns:
-                if column.name in existing_columns:
+                if column.name not in existing_columns:
+                    column_type = column.type.compile(dialect=engine.dialect)
+                    print(f"Migrating: adding column '{column.name}' to table '{table.name}'")
+                    conn.execute(
+                        text(f'ALTER TABLE "{table.name}" ADD COLUMN "{column.name}" {column_type}')
+                    )
                     continue
 
-                column_type = column.type.compile(dialect=engine.dialect)
-                print(f"Migrating: adding column '{column.name}' to table '{table.name}'")
-                conn.execute(
-                    text(f'ALTER TABLE "{table.name}" ADD COLUMN "{column.name}" {column_type}')
-                )
+                db_column = existing_columns[column.name]
+                if column.nullable and not db_column["nullable"]:
+                    print(f"Migrating: relaxing NOT NULL on '{table.name}.{column.name}'")
+                    conn.execute(
+                        text(f'ALTER TABLE "{table.name}" ALTER COLUMN "{column.name}" DROP NOT NULL')
+                    )
 
 
 sync_missing_columns()
