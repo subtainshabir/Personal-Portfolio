@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api, resolveAssetUrl } from '../../lib/api';
-import EmbeddingField from '../EmbeddingField/EmbeddingField';
+import EmbeddingField from '../Embeddingfield/EmbeddingField';
 import './Hero.css';
 
 function findLink(links, platform) {
