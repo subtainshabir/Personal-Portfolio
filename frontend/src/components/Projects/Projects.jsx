@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../lib/api';
+import { api, resolveAssetUrl } from '../../lib/api';
 import useReveal from '../../hooks/useReveal';
 import './Projects.css';
 
 function ProjectVisual({ seed, image, title }) {
   if (image) {
-    return <img className="project-visual project-visual-image" src={image} alt={title} />;
+    return <img className="project-visual project-visual-image" src={resolveAssetUrl(image)} alt={title} />;
   }
 
   const hue = seed % 2 === 0 ? 'a' : 'b';

@@ -1,4 +1,11 @@
-const BASE_URL = '/api';
+const API_ORIGIN = import.meta.env.VITE_API_URL || '';
+const BASE_URL = `${API_ORIGIN}/api`;
+
+export function resolveAssetUrl(path) {
+  if (!path) return path;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${API_ORIGIN}${path}`;
+}
 
 class ApiError extends Error {
   constructor(message, status) {

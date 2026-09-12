@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import { api, ApiError } from '../../../lib/api';
+import { api, ApiError, resolveAssetUrl } from '../../../lib/api';
 import './EntityFormModal.css';
 
 export default function EntityFormModal({ entity, initialValues, onSave, onClose }) {
@@ -85,7 +85,7 @@ export default function EntityFormModal({ entity, initialValues, onSave, onClose
               {field.type === 'image' && (
                 <>
                   {values[field.name] && (
-                    <img src={values[field.name]} alt="" className="entity-image-preview" />
+                    <img src={resolveAssetUrl(values[field.name])} alt="" className="entity-image-preview" />
                   )}
                   <input
                     id={field.name}

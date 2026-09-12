@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../lib/api';
+import { api, resolveAssetUrl } from '../../lib/api';
 import EmbeddingField from '../EmbeddingField/EmbeddingField';
 import './Hero.css';
 
@@ -17,8 +17,15 @@ export default function Hero() {
     Promise.all([api.get('/about'), api.get('/social-links')])
       .then(([aboutList, links]) => {
         if (!cancelled) {
-          setProfile(aboutList[0] ?? null);
+          const aboutProfile = aboutList[0] ?? null;
+          setProfile(aboutProfile);
           setSocialLinks(links);
+
+          if (aboutProfile?.name) {
+            document.title = aboutProfile.title
+              ? `${aboutProfile.name} — ${aboutProfile.title}`
+              : aboutProfile.name;
+          }
         }
       })
       .catch(() => {
@@ -78,7 +85,7 @@ export default function Hero() {
 
         <div className="hero-visual">
           {profile.image ? (
-            <img className="hero-photo" src={profile.image} alt={profile.name} />
+            <img className="hero-photo" src={resolveAssetUrl(profile.image)} alt={profile.name} />
           ) : (
             <div aria-hidden="true">
               <EmbeddingField />
